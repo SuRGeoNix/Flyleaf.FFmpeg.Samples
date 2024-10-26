@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <Platforms>x86;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Common.Utils">
+      <Static>True</Static>
+    </Using>
+    <Using Include="Flyleaf.FFmpeg" />
+    <Using Include="Flyleaf.FFmpeg.Codec" />
+    <Using Include="Flyleaf.FFmpeg.Codec.Decode" />
+    <Using Include="Flyleaf.FFmpeg.Codec.Encode" />
+    <Using Include="Flyleaf.FFmpeg.Extensions" />
+    <Using Include="Flyleaf.FFmpeg.Format" />
+    <Using Include="Flyleaf.FFmpeg.Format.Demux" />
+    <Using Include="Flyleaf.FFmpeg.Format.Mux" />
+    <Using Include="Flyleaf.FFmpeg.HWAccel" />
+    <Using Include="Flyleaf.FFmpeg.Raw">
+      <Static>True</Static>
+    </Using>
+    <Using Include="Flyleaf.FFmpeg.Spec" />
+    <Using Include="Flyleaf.FFmpeg.Utils">
+      <Static>True</Static>
+    </Using>
+    <Using Include="System.Console">
+      <Static>True</Static>
+    </Using>
+    <Using Include="System.Diagnostics" />
+  </ItemGroup>
+
+</Project>
