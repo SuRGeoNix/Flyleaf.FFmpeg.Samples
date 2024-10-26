@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DecodeFilterAudio", "FFmpeg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DecodeFilterVideo", "FFmpeg.Examples\DecodeFilterVideo\DecodeFilterVideo.csproj", "{177B593A-DA03-43B5-B9E1-E1EA27FCEC44}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HWDecode", "FFmpeg.Examples\ConsoleApp1\HWDecode.csproj", "{8ECE5B51-4FF7-4CD9-AABC-E778D87C6919}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HWDecode", "FFmpeg.Examples\HWDecode\HWDecode.csproj", "{8ECE5B51-4FF7-4CD9-AABC-E778D87C6919}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreenCaptureWithOverlay", "ScreenCaptureWithOverlay\ScreenCaptureWithOverlay.csproj", "{14A86B8F-2C39-497B-A4E6-330465A7889F}"
 EndProject
