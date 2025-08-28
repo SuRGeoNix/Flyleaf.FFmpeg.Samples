@@ -94,5 +94,7 @@ public class RemuxerSample
         muxer.Dispose();
         FFProbe(opt.OutputFile);
         #endregion
+
+        Console.WriteLine($"[Success] {(new FileInfo(opt.OutputFile)).FullName}");
     }
 }

@@ -105,7 +105,7 @@ unsafe class TranscoderSample
         foreach (var stream in Demuxer.Streams)
         {
             if ((Options.IncludeStreams != null && !Options.IncludeStreams.Contains(stream.Index)) ||
-                (Options.ExcludeStreams != null && Options.ExcludeStreams.Contains(stream.Index)))
+                (Options.ExcludeStreams != null &&  Options.ExcludeStreams.Contains(stream.Index)))
                 continue;
 
             var transcoder = Transcoder.Create(this, stream);
@@ -165,11 +165,13 @@ unsafe class TranscoderSample
         foreach(var transcoder in TranscoderByStreamIndex.Values)
             transcoder.Dispose();
 
-        Muxer.Dispose();
-        packet.Dispose();
+        Muxer.  Dispose();
+        packet. Dispose();
         Demuxer.Dispose();
         //FFProbe(Options.OutputFile);
         #endregion
+
+        WriteLine($"[Success] {(new FileInfo(opt.OutputFile)).FullName}");
     }
 
     // Will be called by the last transcoder when all transcoders are ready (have been configured by at least one frame or cached packets exhausted)

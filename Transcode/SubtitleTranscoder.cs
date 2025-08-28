@@ -59,15 +59,15 @@
             return;
 
         SubtitleEncoderSpec? subEncoderSpec = null;
-        if (Muxer.FormatSpec.Supports(Decoder.CodecSpec.CodecId))
+        if (Muxer.MuxerSpec.Supports(Decoder.CodecSpec.CodecId))
             subEncoderSpec = CodecSpec.FindSubtitleEncoder(Decoder.CodecSpec.CodecId);
-        else if (Decoder.CodecSpec.CodecId == AVCodecID.HdmvPgsSubtitle && (Muxer.FormatSpec.Name == "matroska" || Muxer.FormatSpec.Supports(AVCodecID.DvdSubtitle)))
+        else if (Decoder.CodecSpec.CodecId == AVCodecID.HdmvPgsSubtitle && (Muxer.MuxerSpec.Name == "matroska" || Muxer.MuxerSpec.Supports(AVCodecID.DvdSubtitle)))
         {
             subEncoderSpec = CodecSpec.FindSubtitleEncoder(AVCodecID.DvdSubtitle);
             WriteLine($"[#{T}{Stream.Index} - {Stream.CodecId}] Not supported for output. Using dvdsubtitles instead");
         }
         else if (Decoder.CodecDescriptor.Properties.HasFlag(CodecPropFlags.TextSub))
-            subEncoderSpec = CodecSpec.FindSubtitleEncoder(Muxer.FormatSpec.BestTextSubtitleEncoder());
+            subEncoderSpec = CodecSpec.FindSubtitleEncoder(Muxer.MuxerSpec.BestTextSubtitleEncoder());
 
         if (subEncoderSpec == null)
         {
@@ -89,7 +89,7 @@
 
         Decoder.ExtraDataCopyTo(&Encoder._ptr->extradata, &Encoder._ptr->extradata_size);
 
-        if (Muxer.FormatSpec.Flags.HasFlag(MuxerSpecFlags.GlobalHeader))
+        if (Muxer.MuxerSpec.Flags.HasFlag(MuxerSpecFlags.GlobalHeader))
             Encoder.Flags |= SubtitleEncoderFlags.GlobalHeader;
 
         Encoder.Flags |= SubtitleEncoderFlags.FrameDuration;
@@ -128,7 +128,7 @@
     public override void Mux(Packet packet)
     {
         packet.RescaleTimestamp(Encoder.Timebase, StreamMux.Timebase, StreamMux.Index);
-        WriteLine($"[#{T}{StreamMux.Index}] [Muxer-final] dts: {packet.Dts.McsToTime(StreamMux.Timebase)} pts: {packet.Pts.McsToTime(StreamMux.Timebase)} <> {(MaxDuration == long.MaxValue ? "∞" : MaxDuration.McsToTime(StreamMux.Timebase))}");
+        WriteLine($"[#{T}{StreamMux.Index}] [Muxer-final] dts: {packet.Dts.TbToTime(StreamMux.Timebase)} pts: {packet.Pts.TbToTime(StreamMux.Timebase)} <> {(MaxDuration == long.MaxValue ? "∞" : MaxDuration.TbToTime(StreamMux.Timebase))}");
 
         if (packet.Pts + packet.Duration > MaxDuration)
         {
@@ -155,6 +155,6 @@
         Demuxer?.Disable(Stream);
         Decoder?.Dispose();
         Encoder?.Dispose();
-        Frame?.Dispose();
+        Frame?.  Dispose();
     }
 }

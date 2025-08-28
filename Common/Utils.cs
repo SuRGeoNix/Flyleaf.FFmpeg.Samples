@@ -1,5 +1,6 @@
 ﻿using Flyleaf.FFmpeg;
 using Flyleaf.FFmpeg.Format.Demux;
+
 using static Flyleaf.FFmpeg.Utils;
 
 namespace Common;
@@ -7,11 +8,11 @@ namespace Common;
 public static class Utils
 {
     // FFmpeg x86/x64 Paths
-    public static string FFmpegPath_x86 = FindFolderBelow("FFmpeg/x86")!;
-    public static string FFmpegPath_x64 = FindFolderBelow("FFmpeg/x64")!;
+    public static readonly string FFmpegPath_x86 = FindFolderBelow("FFmpeg/x86")!;
+    public static readonly string FFmpegPath_x64 = FindFolderBelow("FFmpeg/x64")!;
 
     // IN Path / Files
-    public static string Sample = FindFileBelow("Sample.mp4")!;
+    public static readonly string Sample = FindFileBelow("Sample.mp4")!;
     public const string Bluray  = @$"bluray:d:";
 
     //public const string InDir   =@"C:\VideoSamples\";

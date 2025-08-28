@@ -1,6 +1,5 @@
 ﻿using Flyleaf.FFmpeg.Format;
 using Flyleaf.FFmpeg.Format.Demux;
-using Flyleaf.FFmpeg.Format.Mux;
 using Flyleaf.FFmpeg;
 using Flyleaf.FFmpeg.Spec;
 
@@ -8,7 +7,6 @@ using Flyleaf.FFmpeg.Codec.Decode;
 using Flyleaf.FFmpeg.Codec;
 using Flyleaf.FFmpeg.Filter;
 
-using static Flyleaf.FFmpeg.Raw;
 using static Common.Utils;
 
 LoadFFmpeg();
@@ -122,7 +120,7 @@ public unsafe class DecodeFilterAudioSample
         }
         #endregion
 
-        Console.WriteLine($"Open with Flyleaf -> fmt://s16le?{opt.OutputFile}&ch_layout=mono&sample_rate=8000");
+        Console.WriteLine($"Open with Flyleaf ->\r\nfmt://s16le?{audioFile.Name}&ch_layout=mono&sample_rate=8000");
         
         #region Dispose
         demuxer.Dispose();

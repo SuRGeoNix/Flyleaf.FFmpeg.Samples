@@ -89,7 +89,7 @@
         //    audioEncoder.Level          = audioDecoder.Level;
         //}
 
-        if (Muxer.FormatSpec.Flags.HasFlag(MuxerSpecFlags.GlobalHeader))
+        if (Muxer.MuxerSpec.Flags.HasFlag(MuxerSpecFlags.GlobalHeader))
             Encoder.Flags |= AudioEncoderFlags.GlobalHeader;
 
         Encoder.Flags |= AudioEncoderFlags.FrameDuration;
@@ -232,7 +232,7 @@
     public override void Mux(Packet packet)
     {
         packet.RescaleTimestamp(Encoder.Timebase, StreamMux.Timebase, StreamMux.Index);
-        WriteLine($"[#{T}{StreamMux.Index}] [Muxer-final] dts: {packet.Dts.McsToTime(StreamMux.Timebase)} pts: {packet.Pts.McsToTime(StreamMux.Timebase)} | {Duration.McsToTime(StreamMux.Timebase)} <> {(MaxDuration == long.MaxValue ? "∞" : MaxDuration.McsToTime(StreamMux.Timebase))}");
+        WriteLine($"[#{T}{StreamMux.Index}] [Muxer-final] dts: {packet.Dts.TbToTime(StreamMux.Timebase)} pts: {packet.Pts.TbToTime(StreamMux.Timebase)} | {Duration.TbToTime(StreamMux.Timebase)} <> {(MaxDuration == long.MaxValue ? "∞" : MaxDuration.TbToTime(StreamMux.Timebase))}");
 
         if (Duration > MaxDuration)
         {
@@ -251,8 +251,8 @@
         if (Frame.Pts == NoTs)
             return;
 
-        Frame.Duration   = Rescale(Frame.Duration,          Decoder.PacketTimebase, Encoder.Timebase);
-        Frame.Pts        = Rescale(Frame.Pts - StartTimePts,Decoder.PacketTimebase, Encoder.Timebase);
+        Frame.Duration   = Rescale(Frame.Duration,          Decoder.Timebase, Encoder.Timebase);
+        Frame.Pts        = Rescale(Frame.Pts - StartTimePts,Decoder.Timebase, Encoder.Timebase);
 
         // Fix the issue with time bases that it will produce the same pts
         if (Frame.Pts == LastPts)
@@ -266,6 +266,6 @@
         Demuxer?.Disable(Stream);
         Decoder?.Dispose();
         Encoder?.Dispose();
-        Frame?.Dispose();
+        Frame?.  Dispose();
     }
 }

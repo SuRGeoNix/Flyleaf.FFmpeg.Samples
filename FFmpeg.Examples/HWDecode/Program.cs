@@ -6,7 +6,6 @@ using Flyleaf.FFmpeg.Format;
 using Flyleaf.FFmpeg.Format.Demux;
 using Flyleaf.FFmpeg.Spec;
 
-using static Flyleaf.FFmpeg.Raw;
 using static Common.Utils;
 
 LoadFFmpeg();
@@ -134,7 +133,7 @@ public unsafe class HWDecodeSample
         }
         #endregion
 
-        Console.WriteLine($"Open with Flyleaf -> fmt://rawvideo?{opt.OutputFile}&pixel_format={hwFrames!.SWPixelFormat.GetName()}&video_size={videoStream.Width}x{videoStream.Height}");
+        Console.WriteLine($"Open with Flyleaf ->\r\nfmt://rawvideo?{videoFile.Name}&pixel_format={hwFrames!.SWPixelFormat.GetName()}&video_size={videoStream.Width}x{videoStream.Height}");
 
         #region Dispose
         demuxer.Dispose();

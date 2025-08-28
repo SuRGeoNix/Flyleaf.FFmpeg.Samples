@@ -97,7 +97,7 @@
         //videoStreamMux.Metadata = videoStream.Metadata;
 
         // TBR: AVI supports hevc only if you pass the codec tag (codec id is not enough) | That will cause mpegts to try to mux vp9 as private data and possible others
-        if (!Muxer.FormatSpec.Supports(Encoder.CodecSpec.CodecId))
+        if (!Muxer.MuxerSpec.Supports(Encoder.CodecSpec.CodecId))
             StreamMux.CodecTag = FormatSpec.FindTag(Encoder.CodecSpec.CodecId) ?? throw new($"[#{T}{Stream.Index} - {Stream.CodecId}] Not supported for output");
     }
 
@@ -163,7 +163,7 @@
             };
 
         if (!hwDownload)
-            Encoder.HWFramesContext = Decoder.HWFramesContext;
+            Encoder.HWFramesContext = Decoder.HWFramesContext; // CRIT: This is wrong we should create another context?*
 
         // CFR (Constant Frame Rate) - specified in codecpar
         if (VideoStream.FrameRate.Num > 0 && VideoStream.FrameRate.Den > 0)
@@ -176,7 +176,7 @@
         
         Encoder.Flags |= VideoEncoderFlags.FrameDuration; // ensures CFR, encoder will check also frame durations
 
-        if (Muxer.FormatSpec.Flags.HasFlag(MuxerSpecFlags.GlobalHeader))
+        if (Muxer.MuxerSpec.Flags.HasFlag(MuxerSpecFlags.GlobalHeader))
             Encoder.Flags |= VideoEncoderFlags.GlobalHeader; // sets extradata
 
         Encoder.StrictCompliance = StrictCompliance.Experimental;
@@ -327,7 +327,7 @@
     {
         //WriteLine($"[#{T}{StreamMux.Index}] [Encoder-out] dts: {packet.Dts.McsToTime(Encoder.Timebase)} pts: {packet.Pts.McsToTime(Encoder.Timebase)} | {Duration.McsToTime(Encoder.Timebase)} <> {(MaxDuration == long.MaxValue ? "∞" : MaxDuration.McsToTime(Encoder.Timebase))}");
         packet.RescaleTimestamp(Encoder.Timebase, StreamMux.Timebase, StreamMux.Index);
-        WriteLine($"[#{T}{StreamMux.Index}] [Muxer-final] dts: {packet.Dts.McsToTime(StreamMux.Timebase)} pts: {packet.Pts.McsToTime(StreamMux.Timebase)} | {Duration.McsToTime(StreamMux.Timebase)} <> {(MaxDuration == long.MaxValue ? "∞" : MaxDuration.McsToTime(StreamMux.Timebase))}");
+        WriteLine($"[#{T}{StreamMux.Index}] [Muxer-final] dts: {packet.Dts.TbToTime(StreamMux.Timebase)} pts: {packet.Pts.TbToTime(StreamMux.Timebase)} | {Duration.TbToTime(StreamMux.Timebase)} <> {(MaxDuration == long.MaxValue ? "∞" : MaxDuration.TbToTime(StreamMux.Timebase))}");
         
         if (Duration > MaxDuration)
         {
@@ -346,8 +346,8 @@
         if (Frame.Pts == NoTs)
             return;
 
-        Frame.Duration   = Rescale(Frame.Duration,          Decoder.PacketTimebase, Encoder.Timebase);
-        Frame.Pts        = Rescale(Frame.Pts - StartTimePts,Decoder.PacketTimebase, Encoder.Timebase);
+        Frame.Duration   = Rescale(Frame.Duration,          Decoder.Timebase, Encoder.Timebase);
+        Frame.Pts        = Rescale(Frame.Pts - StartTimePts,Decoder.Timebase, Encoder.Timebase);
 
         // Fix the issue with time bases that it will produce the same pts
         if (Frame.Pts == LastPts)
@@ -358,10 +358,10 @@
 
     public override void Dispose()
     {
-        Demuxer?.Disable(Stream);
-        Decoder?.Dispose();
-        Encoder?.Dispose();
-        Frame?.Dispose();
+        Demuxer?. Disable(Stream);
+        Decoder?. Dispose();
+        Encoder?. Dispose();
+        Frame?.   Dispose();
 
         hwDevice?.Dispose();
         hwFrames?.Dispose();

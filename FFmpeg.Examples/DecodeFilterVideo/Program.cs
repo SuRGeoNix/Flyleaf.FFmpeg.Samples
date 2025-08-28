@@ -7,7 +7,6 @@ using Flyleaf.FFmpeg.Codec.Decode;
 using Flyleaf.FFmpeg.Codec;
 using Flyleaf.FFmpeg.Filter;
 
-using static Flyleaf.FFmpeg.Raw;
 using static Common.Utils;
 
 LoadFFmpeg();
@@ -119,7 +118,7 @@ public unsafe class DecodeFilterVideoSample
         }
         #endregion
 
-        Console.WriteLine($"Open with Flyleaf -> fmt://rawvideo?{opt.OutputFile}&pixel_format=gray8&video_size=24x78");
+        Console.WriteLine($"Open with Flyleaf ->\r\nfmt://rawvideo?{videoFile.Name}&pixel_format=gray8&video_size=24x78");
 
         #region Dispose
         demuxer.Dispose();

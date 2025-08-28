@@ -1,15 +1,15 @@
 ﻿using Flyleaf.FFmpeg;
 using Flyleaf.FFmpeg.Codec;
 using Flyleaf.FFmpeg.Codec.Decode;
+using Flyleaf.FFmpeg.Codec.Encode;
+using Flyleaf.FFmpeg.Filter;
 using Flyleaf.FFmpeg.Format;
 using Flyleaf.FFmpeg.Format.Demux;
+using Flyleaf.FFmpeg.Format.Mux;
 using Flyleaf.FFmpeg.Spec;
 
 using static Flyleaf.FFmpeg.Raw;
 using static Common.Utils;
-using Flyleaf.FFmpeg.Filter;
-using Flyleaf.FFmpeg.Format.Mux;
-using Flyleaf.FFmpeg.Codec.Encode;
 
 LoadFFmpeg();
 
@@ -144,6 +144,8 @@ public unsafe class ScreenCapOverlay
         videoFrame.Dispose();
         imageFrame.Dispose();
         overlayFrames.Dispose();
+
+        Console.WriteLine($"[Success] {(new FileInfo(opt.OutputFile)).FullName}");
     }
 
     static VideoFrame GetImage(string path)
@@ -194,21 +196,21 @@ public unsafe class ScreenCapOverlay
     {
         public VideoFilterLink SinkConfiguration { get; private set; }
 
-        FilterGraph         filterGraph;
-        VideoBufferSource   srcDDA, srcOverlay;
-        FilterContext       overlay;
-        VideoBufferSink     sink;
-        VideoFrame          overlayFrame;
-        DDAFrames           ddaFrames;
-        int                 frameNum;
+        readonly FilterGraph        filterGraph;
+        readonly VideoBufferSource  srcDDA, srcOverlay;
+        readonly FilterContext      overlay;
+        readonly VideoBufferSink    sink;
+        readonly DDAFrames          ddaFrames;
+        int                         frameNum;
 
         public OverlayFrames(VideoFrame overlayFrame, int framerate = 25)
         {
-            filterGraph         = new();
-            //filterGraph.ImageConvOpts = "sws_flags=lanczos+accurate_rnd+full_chroma_int+full_chroma_inp+bitexact";
-            filterGraph.ImageConvOpts = "sws_flags=full_chroma_int";
+            filterGraph         = new()
+            {
+                ImageConvOpts = "full_chroma_int"
+                //ImageConvOpts = "sws_flags=lanczos+accurate_rnd+full_chroma_int+full_chroma_inp+bitexact"
+            };
             ddaFrames           = new(framerate);
-            this.overlayFrame   = overlayFrame;
 
             srcDDA = new(filterGraph, new() 
             {
@@ -248,18 +250,22 @@ public unsafe class ScreenCapOverlay
             //Console.WriteLine(filterGraph.Dump());
         
             SinkConfiguration = (VideoFilterLink) sink.InPads[0].FilterLink!;
-        }
 
+            // Pass overlay frame once and drain (framesync eof_action default repeat)
+            overlayFrame.Pts      = 0;
+            overlayFrame.Duration = 1;
+            srcOverlay.SendFrame(overlayFrame, AVBuffersrcFlag.KeepRef).ThrowOnFailure();
+            srcOverlay.SendFrame((AVFrame*)null).ThrowOnFailure();
+        }
+        
         public FFmpegResult RecvFrame(VideoFrame videoFrame)
         {
             ddaFrames.RecvFrame(videoFrame).ThrowOnFailure();
             
-            videoFrame.Pts      = overlayFrame.Pts      = frameNum++;
-            videoFrame.Duration = overlayFrame.Duration = 1;
+            videoFrame.Pts      = frameNum++;
+            videoFrame.Duration = 1;
 
             srcDDA.SendFrame(videoFrame, AVBuffersrcFlag.KeepRef).ThrowOnFailure();
-            srcOverlay.SendFrame(overlayFrame, AVBuffersrcFlag.KeepRef).ThrowOnFailure();
-            
             return sink.RecvFrame(videoFrame);
         }
 
@@ -274,10 +280,10 @@ public unsafe class ScreenCapOverlay
     {
         public VideoFilterLink SinkConfiguration { get; private set; }
 
-        FilterGraph     filterGraph;
-        FilterContext   ddagrab;
-        FilterContext   hwdownload;
-        VideoBufferSink sink;
+        readonly FilterGraph        filterGraph;
+        readonly FilterContext      ddagrab;
+        readonly FilterContext      hwdownload;
+        readonly VideoBufferSink    sink;
 
         public DDAFrames(int framerate = 25)
         {

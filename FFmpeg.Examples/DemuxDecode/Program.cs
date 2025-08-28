@@ -5,7 +5,6 @@ using Flyleaf.FFmpeg.Spec;
 using Flyleaf.FFmpeg.Codec.Decode;
 using Flyleaf.FFmpeg.Codec;
 
-using static Flyleaf.FFmpeg.Raw;
 using static Common.Utils;
 
 LoadFFmpeg();
@@ -119,7 +118,7 @@ public unsafe class DemuxDecodeSample
         }
         #endregion
 
-        Console.WriteLine($"Open raw video with Flyleaf -> fmt://rawvideo?{opt.VideoOutFile}&pixel_format={videoDecoder.PixelFormat.GetName()}&video_size={videoDecoder.Width}x{videoDecoder.Height}&framerate={videoDecoder.FrameRate}");
+        Console.WriteLine($"Open raw video with Flyleaf ->\r\nfmt://rawvideo?{videoFile.Name}&pixel_format={videoDecoder.PixelFormat.GetName()}&video_size={videoDecoder.Width}x{videoDecoder.Height}&framerate={videoDecoder.FrameRate}");
 
         int channels;
         AVSampleFormat format = audioDecoder.SampleFormat;
@@ -143,7 +142,7 @@ public unsafe class DemuxDecodeSample
             _ => "<unknown>"
         };
 
-        Console.WriteLine($"Open raw audio with Flyleaf -> fmt://{demuxerName}?{opt.AudioOutFile}&channels={channels}&sample_rate={audioDecoder.SampleRate}");
+        Console.WriteLine($"Open raw audio with Flyleaf ->\r\nfmt://{demuxerName}?{audioFile.Name}&channels={channels}&sample_rate={audioDecoder.SampleRate}");
 
         #region Dispose
         demuxer.Dispose();
