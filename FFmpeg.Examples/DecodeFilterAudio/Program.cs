@@ -62,7 +62,7 @@ public unsafe class DecodeFilterAudioSample
         AudioBufferSource   audioBufferSrc  = new(filterGraph, new(audioDecoder));
         AudioBufferSink     audioBufferSink = new(filterGraph, new()
         {
-            ChannelLayouts  = ["mono"],
+            ChannelLayouts  = [Raw.AV_CHANNEL_LAYOUT_MONO],
             SampleFormats   = [AVSampleFormat.S16],
             SampleRates     = [8000]
         });

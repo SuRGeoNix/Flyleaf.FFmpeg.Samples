@@ -207,7 +207,7 @@ public unsafe class ScreenCapOverlay
         {
             filterGraph         = new()
             {
-                ImageConvOpts = "full_chroma_int"
+                ImageConvOpts   = $"sws_flags=full_chroma_int"
                 //ImageConvOpts = "sws_flags=lanczos+accurate_rnd+full_chroma_int+full_chroma_inp+bitexact"
             };
             ddaFrames           = new(framerate);

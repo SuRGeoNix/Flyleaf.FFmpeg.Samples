@@ -18,7 +18,7 @@ public static class Utils
     //public const string InDir   =@"C:\VideoSamples\";
     //public const string B0      = @$"{InDir}0.mp4";
 
-    public const string Coca    = $@"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/512px-Coca-Cola_logo.svg.png";
+    public const string Coca    = $@"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/330px-Coca-Cola_logo.svg.png";
 
     // OUT Path / Files
     public const string OutDir  =@"";
