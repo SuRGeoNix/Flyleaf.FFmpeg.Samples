@@ -62,7 +62,7 @@
     {
         var codecId = Ctx.Options.AudioEncoder != AVCodecID.None ? Ctx.Options.AudioEncoder : Decoder.CodecSpec.CodecId;
         var encoders= CodecSpec.FindAudioEncoders(codecId) ?? throw new($"Could not find encoder spec for '{codecId}'");
-        var spec    = encoders.Where(ae => ae.SampleFormats.Contains(Decoder.SampleFormat)).FirstOrDefault() ?? throw new($"Could not find encoder spec for '{codecId}'");
+        var spec    = encoders.Where(ae => ae.SampleFormats.Length == 0 || ae.SampleFormats.Contains(Decoder.SampleFormat)).FirstOrDefault() ?? throw new($"Could not find encoder spec for '{codecId}'");
 
         if (frame != null)
             Encoder = new(spec)

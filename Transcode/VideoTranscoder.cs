@@ -115,7 +115,7 @@
         var pixDesc = Decoder.PixelFormat.GetDescriptor();
         var pixFmt  = Decoder.PixelFormat;
         var encoders= CodecSpec.FindVideoEncoders(codecId) ?? throw new($"Could not find encoder spec for '{codecId}'");
-        spec        = encoders.Where(e => e.PixelFormats.Contains(pixFmt) && Ctx.Options.HWWrappers.Contains(e.HWWrapper)).FirstOrDefault();
+        spec        = encoders.Where(e => (e.PixelFormats.Length == 0 || e.PixelFormats.Contains(pixFmt)) && Ctx.Options.HWWrappers.Contains(e.HWWrapper)).FirstOrDefault();
 
         if (spec == null)
         {
