@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Flyleaf.FFmpeg" Version="9.0.0" />
+    <PackageReference Include="Flyleaf.FFmpeg" Version="9.0.1" />
   </ItemGroup>
 
 </Project>

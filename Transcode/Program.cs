@@ -178,7 +178,7 @@ unsafe class TranscoderSample
     public void SetupMuxer()
     {
         if (SeekTimeMcs != 0) // (ideally first frame's timestamp so we do it manually)
-            Muxer.AvoidNegTSFlags = AvoidNegTSFlags.MakeZero; // Try to start from 0 timestamps
+            Muxer.AvoidNegTSFlags = AvoidNegTsFlags.MakeZero; // Try to start from 0 timestamps
 
         // Set muxer streams (by V / A / S priority)
         foreach(var transcoder in TranscoderByStreamIndex.Values.Where(x => x is VideoTranscoder))

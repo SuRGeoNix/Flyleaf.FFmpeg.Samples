@@ -37,7 +37,7 @@ public static class Utils
     public static void LoadFFmpeg()
     {
         LoadLibraries(Environment.Is64BitProcess ? FFmpegPath_x64 : FFmpegPath_x86, LoadProfile.All);
-        FFmpegLog.SetLogLevel(LogLevel.Verb);
+        FFmpegLog.SetLogLevel(LogLevel.Verbose);
     }
 
     public static void FFProbe(string file)

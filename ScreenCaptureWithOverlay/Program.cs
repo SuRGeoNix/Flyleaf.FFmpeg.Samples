@@ -159,7 +159,7 @@ public unsafe class ScreenCapOverlay
         videoDecoder.Open();
 
         AVPacket*   packet  = av_packet_alloc();
-        AVFrame*    frame   = av_frame_alloc();
+        VideoFrame  frame   = new();
         FFmpegResult ret;
 
         while ((ret = demuxer.ReadPacket(packet)).Success)
@@ -171,7 +171,7 @@ public unsafe class ScreenCapOverlay
                 demuxer.Dispose();
                 videoDecoder.Dispose();
                 av_packet_free(&packet);
-                return new(frame);
+                return frame;
             }
             else if (!ret.TryAgain)
                 break;
@@ -185,7 +185,7 @@ public unsafe class ScreenCapOverlay
                 demuxer.Dispose();
                 videoDecoder.Dispose();
                 av_packet_free(&packet);
-                return new(frame);
+                return frame;
             }
         }
 
@@ -240,7 +240,7 @@ public unsafe class ScreenCapOverlay
         
             sink = new(filterGraph, new()
             {
-                PixelFormats    = [AVPixelFormat.Rgb24]
+                PixelFormats    = [AVPixelFormat.RGB24]
             }, "sink_0");
 
             srcDDA.Link(overlay).Link(sink);
@@ -254,7 +254,7 @@ public unsafe class ScreenCapOverlay
             // Pass overlay frame once and drain (framesync eof_action default repeat)
             overlayFrame.Pts      = 0;
             overlayFrame.Duration = 1;
-            srcOverlay.SendFrame(overlayFrame, AVBuffersrcFlag.KeepRef).ThrowOnFailure();
+            srcOverlay.SendFrame(overlayFrame, AVBuffersrcFlags.KeepRef).ThrowOnFailure();
             srcOverlay.SendFrame((AVFrame*)null).ThrowOnFailure();
         }
         
@@ -265,7 +265,7 @@ public unsafe class ScreenCapOverlay
             videoFrame.Pts      = frameNum++;
             videoFrame.Duration = 1;
 
-            srcDDA.SendFrame(videoFrame, AVBuffersrcFlag.KeepRef).ThrowOnFailure();
+            srcDDA.SendFrame(videoFrame, AVBuffersrcFlags.KeepRef).ThrowOnFailure();
             return sink.RecvFrame(videoFrame);
         }
 
@@ -292,7 +292,7 @@ public unsafe class ScreenCapOverlay
             hwdownload      = new(filterGraph, "hwdownload", "hwdownload_0");
             sink = new(filterGraph, new()
             {
-                PixelFormats = [AVPixelFormat.Bgra]
+                PixelFormats = [AVPixelFormat.BGRA]
             }, "sink_0");
 
             ddagrab.Link(hwdownload).Link(sink);

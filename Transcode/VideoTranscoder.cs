@@ -119,7 +119,7 @@
 
         if (spec == null)
         {
-            if (!pixDesc->flags.HasFlag(PixFmtFlags.Hwaccel))
+            if (!pixDesc->flags.HasFlag(PixFmtFlags.HWACCEL))
                 throw new($"Could not find encoder spec for '{codecId}'");
 
             WriteLine($"Could not find hw encoder for '{codecId}' ({Decoder.PixelFormat}), will try sw encoder");
@@ -134,7 +134,7 @@
                 Threads             = Environment.ProcessorCount, // this will cause more memory usage
                 Width               = frame.Width,
                 Height              = frame.Height,
-                SampleAspectRatio   = frame.SampleAspectRatio != AVRational.Default ? frame.SampleAspectRatio : Decoder.SampleAspectRatio,
+                SampleAspectRatio   = frame.SampleAspectRatio != AVRational.Zero ? frame.SampleAspectRatio : Decoder.SampleAspectRatio,
                 PixelFormat         = pixFmt,
 
                 //FieldOrder          = videoStream.FieldOrder, // docs say libavcodec but ffmpeg set this manually
@@ -332,7 +332,7 @@
         if (Duration > MaxDuration)
         {
             Demuxer.Disable(Stream);
-            if (Demuxer.Streams.All(s => !s.Enabled) || Demuxer.Streams.Where(s => s.Enabled).All(s => s.CodecId == AVCodecID.Mjpeg))
+            if (Demuxer.Streams.All(s => !s.Enabled) || Demuxer.Streams.Where(s => s.Enabled).All(s => s.CodecId == AVCodecID.MJPEG))
                 { Ctx.Retries = 0; return; }
         }
 

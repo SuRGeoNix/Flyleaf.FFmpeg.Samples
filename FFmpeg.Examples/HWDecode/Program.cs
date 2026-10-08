@@ -14,7 +14,7 @@ HWDecodeSample.Run(new()
 {
     InputFile   = Sample,
     OutputFile  = RAWVideo,
-    HWDevice    = AVHWDeviceType.D3d12va
+    HWDevice    = AVHWDeviceType.D3D12VA
 });
 
 public unsafe class HWDecodeSample

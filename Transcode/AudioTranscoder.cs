@@ -237,7 +237,7 @@
         if (Duration > MaxDuration)
         {
             Demuxer.Disable(Stream);
-            if (Demuxer.Streams.All(s => !s.Enabled) || Demuxer.Streams.Where(s => s.Enabled).All(s => s.CodecId == AVCodecID.Mjpeg))
+            if (Demuxer.Streams.All(s => !s.Enabled) || Demuxer.Streams.Where(s => s.Enabled).All(s => s.CodecId == AVCodecID.MJPEG))
                 { Ctx.Retries = 0; return; }
         }
 
